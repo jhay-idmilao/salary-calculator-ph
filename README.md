@@ -399,40 +399,50 @@ does not include a live consent flow.
 
 ### AdSense wiring
 
-The real AdSense integration is wired up:
+The real AdSense integration is wired up, but currently switched **off**
+while this site's AdSense application is pending:
 
-- **[`constants/ads.ts`](constants/ads.ts)** is the single source of truth
-  for `ADSENSE_CLIENT_ID` and `ADSENSE_SLOT_ID`, and an `ADSENSE_IS_CONFIGURED`
-  flag derived from both. `ADSENSE_CLIENT_ID` is already the real publisher
-  ID (`ca-pub-7109560885960565`) — the same AdSense account used by
-  pdf-tool-ph, since a publisher ID covers a whole account, not one site.
-  `ADSENSE_SLOT_ID` is still the placeholder `XXXXXXXXXX`, so
-  `ADSENSE_IS_CONFIGURED` is still `false` until an ad unit is created for
-  this site specifically.
+- **[`constants/ads.ts`](constants/ads.ts)** has `ADS_ENABLED = false` — a
+  master switch. While it's `false`, `<AdSlot />` renders nothing at all on
+  every page, in every build (dev or production) — no dashed "ad slot
+  placeholder" box for real visitors to see while there's no live ad account
+  behind it yet. Flip it to `true` once this site's AdSense application is
+  approved.
+- The same file holds `ADSENSE_CLIENT_ID` and `ADSENSE_SLOT_ID`, and an
+  `ADSENSE_IS_CONFIGURED` flag derived from both. `ADSENSE_CLIENT_ID` is
+  already the real publisher ID (`ca-pub-7109560885960565`) — the same
+  AdSense account used by pdf-tool-ph, since a publisher ID covers a whole
+  account, not one site. `ADSENSE_SLOT_ID` is still the placeholder
+  `XXXXXXXXXX`, so `ADSENSE_IS_CONFIGURED` is still `false` until an ad unit
+  is created for this site specifically.
 - **[`nuxt.config.ts`](nuxt.config.ts)** (`app.head.script`) loads the
   AdSense loader script (`adsbygoogle.js`) once, globally, in every page's
-  `<head>`, built from `ADSENSE_CLIENT_ID`.
-- **[`AdSlot.vue`](components/AdSlot.vue)** renders a real
-  `<ins class="adsbygoogle">` unit and calls
+  `<head>`, built from `ADSENSE_CLIENT_ID` — unconditionally, regardless of
+  `ADS_ENABLED`, since the AdSense review process itself checks for this
+  code being present on the site.
+- **[`AdSlot.vue`](components/AdSlot.vue)**, once `ADS_ENABLED` is `true`,
+  renders a real `<ins class="adsbygoogle">` unit and calls
   `(adsbygoogle = window.adsbygoogle || []).push({})` on mount to request an
-  ad — but only when `ADSENSE_IS_CONFIGURED` is true **and** the app isn't
-  running in local dev (`import.meta.dev`). Otherwise it falls back to the
-  original labeled placeholder `<div>`, so `npm run dev` and any build made
-  before this site has its own ad unit never shows a blank or broken ad slot.
+  ad — but only when `ADSENSE_IS_CONFIGURED` is also true **and** the app
+  isn't running in local dev (`import.meta.dev`). Otherwise (ads enabled but
+  not yet configured, or running locally) it falls back to the labeled
+  placeholder `<div>` instead, so `npm run dev` and any build made before
+  this site has its own ad unit never shows a blank or broken ad slot.
 - **[`public/ads.txt`](public/ads.txt)** authorizes the domain to serve
   AdSense ads, per the [ads.txt spec](https://iabtechlab.com/ads-txt/), using
-  the same real publisher ID.
+  the same real publisher ID. This file is independent of `ADS_ENABLED` and
+  should stay in place regardless.
 
-#### Before going live, create an ad unit for this site
+#### Once AdSense approves this site
 
-The only placeholder left is `ADSENSE_SLOT_ID` in
-[`constants/ads.ts`](constants/ads.ts) — create an ad unit for this site in
-AdSense → Ads → By ad unit and paste its numeric ID in. (`nuxt.config.ts`,
-`AdSlot.vue`, and `public/ads.txt` all already use the real publisher ID and
-need no further changes.) If individual placements need distinct ad units
-later, pass a `slot` prop to any `<AdSlot :slot="..." />` instance to
-override the shared default. Once the site has real traffic and content,
-submit it for AdSense review from the AdSense dashboard.
+1. Set `ADS_ENABLED = true` in [`constants/ads.ts`](constants/ads.ts).
+2. Create an ad unit for this site in AdSense → Ads → By ad unit and paste
+   its numeric ID into `ADSENSE_SLOT_ID` in the same file. (`nuxt.config.ts`,
+   `AdSlot.vue`, and `public/ads.txt` all already use the real publisher ID
+   and need no further changes.)
+
+If individual placements need distinct ad units later, pass a `slot` prop to
+any `<AdSlot :slot="..." />` instance to override the shared default.
 
 ## Header, footer, and the PDF Tool PH link
 
@@ -510,11 +520,13 @@ AdSense:
   jurisdiction, retention practices, and consent implementation.
 - **Rate verification:** cross-check every 2026 bracket and program statement
   against the latest primary agency circulars before using “2026” in production.
-- **Ad configuration:** the AdSense publisher ID is already real (shared
-  with pdf-tool-ph); create and set a real `ADSENSE_SLOT_ID` in
-  `constants/ads.ts` (see the "AdSense wiring" checklist above) and, if
-  serving visitors in the EEA/UK/Switzerland, add the appropriate consent
-  experience before real ads go live.
+- **Ad configuration:** ads are currently off (`ADS_ENABLED = false` in
+  `constants/ads.ts`) while the AdSense application is pending. The
+  publisher ID is already real (shared with pdf-tool-ph); once approved,
+  flip `ADS_ENABLED` to `true`, create and set a real `ADSENSE_SLOT_ID` (see
+  the "AdSense wiring" checklist above), and, if serving visitors in the
+  EEA/UK/Switzerland, add the appropriate consent experience before real ads
+  go live.
 - **Cross-promo link:** `PDF_TOOL_PH_URL` in `constants/links.ts` is already
   the real PDF Tool PH URL — nothing to swap here, just re-confirm it's still
   correct before launch.

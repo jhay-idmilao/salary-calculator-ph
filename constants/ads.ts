@@ -27,3 +27,15 @@ export const ADSENSE_SLOT_ID = 'XXXXXXXXXX'
  * that's actually pointed at nobody's AdSense account.
  */
 export const ADSENSE_IS_CONFIGURED = !ADSENSE_CLIENT_ID.includes('X') && !ADSENSE_SLOT_ID.includes('X')
+
+/**
+ * Master on/off switch for `<AdSlot />`, independent of the two flags above.
+ *
+ * While this site's AdSense application is pending, `<AdSlot />` should show
+ * nothing at all rather than a dashed "ad slot placeholder" box on the live
+ * site — that box is a dev-only layout aid, not something real visitors
+ * should see. Set this to `true` once the AdSense account approves this
+ * site (at that point also fill in the real `ADSENSE_SLOT_ID` above so real
+ * ads actually start serving instead of the placeholder reappearing).
+ */
+export const ADS_ENABLED = false

@@ -6,17 +6,21 @@
  * the active tab's markup exists in the DOM), exactly one ad slot is ever
  * rendered on screen at a time.
  *
- * In production, once real AdSense IDs are set in `constants/ads.ts`, this
- * renders a live `<ins class="adsbygoogle">` unit and requests an ad. In
- * local dev (`npm run dev`), or in any build where those IDs are still the
- * placeholders, it falls back to the labeled placeholder box instead — so
- * development and preview builds never depend on a live AdSense account and
- * never show a blank or broken ad slot.
+ * `ADS_ENABLED` in `constants/ads.ts` is a master switch: while it's `false`
+ * (the site's AdSense application is still pending) this component renders
+ * nothing at all — no dashed placeholder box for real visitors to see.
+ *
+ * Once `ADS_ENABLED` is flipped to `true`: in production, once real AdSense
+ * IDs are also set, this renders a live `<ins class="adsbygoogle">` unit and
+ * requests an ad. In local dev (`npm run dev`), or in any build where those
+ * IDs are still placeholders, it falls back to the labeled placeholder box
+ * instead — so development and preview builds never depend on a live
+ * AdSense account and never show a blank or broken ad slot.
  *
  * The AdSense loader script itself (adsbygoogle.js) is added once, globally,
  * in nuxt.config.ts `app.head.script` — not per-slot.
  */
-import { ADSENSE_CLIENT_ID, ADSENSE_IS_CONFIGURED, ADSENSE_SLOT_ID } from '~/constants/ads'
+import { ADS_ENABLED, ADSENSE_CLIENT_ID, ADSENSE_IS_CONFIGURED, ADSENSE_SLOT_ID } from '~/constants/ads'
 
 const props = withDefaults(
   defineProps<{
@@ -31,12 +35,14 @@ const props = withDefaults(
 )
 
 // Local dev never has a real AdSense account behind it, so it always shows
-// the placeholder — independent of whether real IDs happen to be filled in.
-const showPlaceholder = import.meta.dev || !ADSENSE_IS_CONFIGURED
+// the placeholder (once ads are enabled at all) — independent of whether
+// real IDs happen to be filled in.
+const showPlaceholder = ADS_ENABLED && (import.meta.dev || !ADSENSE_IS_CONFIGURED)
+const showRealAd = ADS_ENABLED && !showPlaceholder
 const adSlotId = computed(() => props.slot || ADSENSE_SLOT_ID)
 
 onMounted(() => {
-  if (showPlaceholder) return
+  if (!showRealAd) return
   // Standard AdSense "request an ad for this unit" call — see the module
   // comment above and the README's Monetization section.
   window.adsbygoogle = window.adsbygoogle || []
@@ -58,7 +64,7 @@ onMounted(() => {
     </span>
   </div>
   <ins
-    v-else
+    v-else-if="showRealAd"
     class="adsbygoogle block min-h-[100px] w-full"
     role="complementary"
     :aria-label="label"
