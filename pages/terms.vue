@@ -77,8 +77,7 @@ setPageSeo({
         <h2 class="md-title-large mb-3">Changes and contact</h2>
         <p>
           Continued use after updated terms are posted means you accept the revised terms. Questions
-          may be sent to <a class="content-link" href="mailto:hello@example.com">hello@example.com</a>.
-          Replace this placeholder address with the operator’s monitored contact before launch.
+          may be sent to <a class="content-link" href="mailto:hello@pdftool.ph">hello@pdftool.ph</a>.
         </p>
       </section>
     </article>

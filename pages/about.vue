@@ -75,7 +75,7 @@ setPageSeo({
         <h2 class="md-title-large mb-3">Questions or corrections</h2>
         <p>
           If you spot an unclear explanation or a rate that may need review, contact
-          <a class="content-link" href="mailto:hello@example.com">hello@example.com</a>.
+          <a class="content-link" href="mailto:hello@pdftool.ph">hello@pdftool.ph</a>.
           Please do not email salary records, government identification numbers, medical details,
           tax files, or other sensitive personal information.
         </p>

@@ -1,7 +1,7 @@
 import type { UseSeoMetaInput } from '@unhead/vue'
 
 export const SITE_NAME = 'Sahod Calculator'
-export const SITE_URL = 'https://sahod-calculator.pages.dev'
+export const SITE_URL = 'https://sahod.pdf-tool-ph.com'
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`
 
 interface PageSeoOptions {
