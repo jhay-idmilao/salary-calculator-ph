@@ -227,55 +227,49 @@ build never silently run different runtimes.
 ## Building for production
 
 ```bash
-npm run generate
+npm run build
 ```
 
-This produces a fully static site — one HTML file per route (hub, calculators,
-guide, About, Privacy, and Terms). With the `cloudflare-pages` Nitro preset, the output is
-written to `dist/` (Cloudflare Pages' expected output folder — not
-`.output/public`). All routes are also listed explicitly in
+Cloudflare Workers Builds detects the deployment environment and asks Nitro for
+a Cloudflare Module Worker. The build contains a Worker entry point plus the
+prerendered static assets for every route (hub, calculators, guide, FAQ, About,
+Privacy, and Terms). All routes are listed explicitly in
 `nitro.prerender.routes` in [`nuxt.config.ts`](nuxt.config.ts) (on top of
 `crawlLinks`), so every hub/tool/content page is guaranteed a prerendered
 file regardless of link-crawl order — add new routes there when you add a
 new tool page.
 
-## Deploying to Cloudflare Pages
-
-1. Push this repo to GitHub/GitLab.
-2. In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect
-   to Git**, and select the repo.
-3. Build settings:
-   - **Framework preset:** Nuxt (or "None" — the build command below is
-     explicit either way)
-   - **Build command:** `npm run generate`
-   - **Build output directory:** `dist`
-4. Deploy. Every push to the connected branch triggers a new static build —
-   no server, database, or environment variables required.
-
-You can also test the production build locally before deploying:
+To reproduce Cloudflare's Worker output locally:
 
 ```bash
-npm run generate
-npx wrangler pages dev dist
+npm run build -- --preset cloudflare-module
 ```
 
-### Troubleshooting: "Missing entry-point to Worker script or to assets directory"
+This writes the module entry point and Wrangler configuration under
+`.output/server/`, the prerendered site under `.output/public/`, and a
+redirect file at `.wrangler/deploy/config.json`. The generated Worker exports
+a `fetch` handler and serves the static files through an `ASSETS` binding.
 
-If a Cloudflare Pages build succeeds (all routes prerendered) but the
-**deploy** step then fails with this error after running
-`Executing user deploy command: npx wrangler deploy`, the project has a
-custom **Deploy command** configured in its dashboard settings that doesn't
-belong there. `wrangler deploy` is the generic Workers deploy command; a
-plain static Pages project doesn't need a deploy command at all — Cloudflare
-uploads the **Build output directory** (`dist`) automatically once the build
-finishes. Fix it in the Cloudflare dashboard, not in this repo:
+## Deploying with Cloudflare Workers Builds
 
-1. Open the Pages project → **Settings → Builds & deployments**.
-2. Clear the **Deploy command** field entirely (leave it blank).
-3. Confirm **Build command** is `npm run generate` (or `npm run build` —
-   both run `nuxt generate` and produce the same static-only output, with no
-   Cloudflare Worker component) and **Build output directory** is `dist`.
-4. Retrigger the deployment.
+The deployment model now matches `pdf-tool-ph`: Git is connected directly to
+a Cloudflare Worker, and a push triggers both build and deployment.
+
+In **Workers & Pages → this Worker → Settings → Build**, use:
+
+- **Build command:** `npm run build`
+- **Deploy command:** `npx wrangler deploy`
+- **Root directory:** blank, unless this repository is inside a monorepo
+- **Node version:** read from `.nvmrc` (Node 22)
+
+`nitro.cloudflare.deployConfig` in [`nuxt.config.ts`](nuxt.config.ts) generates
+the entry point and deployment metadata that `wrangler deploy` needs. The
+Wrangler `name` is `jhay-idmilao-salary-calculator-ph` and must match the
+Worker selected in the Cloudflare dashboard. This calculator currently needs
+no runtime bindings, secrets, database, or server API.
+
+`npm run generate` remains available when a static-only export is useful, but
+that output is not the artifact used by the Worker deployment command.
 
 ### Production domain
 

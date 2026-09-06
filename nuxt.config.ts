@@ -14,7 +14,15 @@ export default defineNuxtConfig({
   // tool/content page is guaranteed a prerendered static file regardless of
   // link-crawl order.
   nitro: {
-    preset: 'cloudflare-pages',
+    // Match pdf-tool-ph's Workers Builds deployment model. During a Cloudflare
+    // build Nitro emits both the module Worker entry point and the redirected
+    // Wrangler config consumed by the dashboard's `npx wrangler deploy` step.
+    cloudflare: {
+      deployConfig: true,
+      wrangler: {
+        name: 'jhay-idmilao-salary-calculator-ph'
+      }
+    },
     prerender: {
       routes: [
         '/',

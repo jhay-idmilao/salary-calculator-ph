@@ -1,6 +1,7 @@
 # Nuxt dev/build outputs
 .nuxt
 .nitro
+.wrangler
 .cache
 .output
 dist
