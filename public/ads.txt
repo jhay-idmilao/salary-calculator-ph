@@ -1,7 +1,6 @@
 # ads.txt — authorizes ad systems to sell inventory on this domain.
 # https://iabtechlab.com/ads-txt/
 #
-# ⚠️ PLACEHOLDER — replace pub-XXXXXXXXXXXXXXXX below with the real AdSense
-# publisher ID once the account is approved. Must match ADSENSE_CLIENT_ID in
-# constants/ads.ts (without the "ca-" prefix).
-google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+# Publisher ID matches ADSENSE_CLIENT_ID in constants/ads.ts (without the
+# "ca-" prefix) — same AdSense account as pdf-tool-ph.
+google.com, pub-7109560885960565, DIRECT, f08c47fec0942fa0

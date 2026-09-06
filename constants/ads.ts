@@ -1,12 +1,13 @@
 /**
  * Google AdSense identifiers.
  *
- * ⚠️ PLACEHOLDER — replace both before going live:
- *   - ADSENSE_CLIENT_ID: the publisher ID from the AdSense account
- *     (Account → Settings → Account information), formatted
- *     `ca-pub-XXXXXXXXXXXXXXXX`.
- *   - ADSENSE_SLOT_ID: an ad unit ID created in AdSense → Ads → By ad unit,
- *     a bare numeric string, e.g. "1234567890".
+ * ADSENSE_CLIENT_ID is the real publisher ID, shared with pdf-tool-ph (same
+ * AdSense account, same builder).
+ *
+ * ⚠️ PLACEHOLDER — ADSENSE_SLOT_ID still needs a real value: an ad unit ID
+ * created in AdSense → Ads → By ad unit for this site specifically, a bare
+ * numeric string, e.g. "1234567890". A publisher ID is shared across a
+ * whole AdSense account, but ad unit IDs are per-site.
  *
  * These two values feed three places, all of which need the real values
  * before ads will actually serve — see the "Monetization (AdSense)" section
@@ -16,7 +17,7 @@
  *   3. Nowhere else — `nuxt.config.ts` and `AdSlot.vue` both import these
  *      constants rather than hardcoding the IDs a second time.
  */
-export const ADSENSE_CLIENT_ID = 'ca-pub-XXXXXXXXXXXXXXXX'
+export const ADSENSE_CLIENT_ID = 'ca-pub-7109560885960565'
 export const ADSENSE_SLOT_ID = 'XXXXXXXXXX'
 
 /**

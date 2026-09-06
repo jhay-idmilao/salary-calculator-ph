@@ -399,12 +399,16 @@ does not include a live consent flow.
 
 ### AdSense wiring
 
-The real AdSense integration is wired up, behind placeholder IDs:
+The real AdSense integration is wired up:
 
 - **[`constants/ads.ts`](constants/ads.ts)** is the single source of truth
-  for `ADSENSE_CLIENT_ID` and `ADSENSE_SLOT_ID` — both currently placeholders
-  (`ca-pub-XXXXXXXXXXXXXXXX` / `XXXXXXXXXX`), and `ADSENSE_IS_CONFIGURED`,
-  which is `false` until both are replaced with real values.
+  for `ADSENSE_CLIENT_ID` and `ADSENSE_SLOT_ID`, and an `ADSENSE_IS_CONFIGURED`
+  flag derived from both. `ADSENSE_CLIENT_ID` is already the real publisher
+  ID (`ca-pub-7109560885960565`) — the same AdSense account used by
+  pdf-tool-ph, since a publisher ID covers a whole account, not one site.
+  `ADSENSE_SLOT_ID` is still the placeholder `XXXXXXXXXX`, so
+  `ADSENSE_IS_CONFIGURED` is still `false` until an ad unit is created for
+  this site specifically.
 - **[`nuxt.config.ts`](nuxt.config.ts)** (`app.head.script`) loads the
   AdSense loader script (`adsbygoogle.js`) once, globally, in every page's
   `<head>`, built from `ADSENSE_CLIENT_ID`.
@@ -414,26 +418,21 @@ The real AdSense integration is wired up, behind placeholder IDs:
   ad — but only when `ADSENSE_IS_CONFIGURED` is true **and** the app isn't
   running in local dev (`import.meta.dev`). Otherwise it falls back to the
   original labeled placeholder `<div>`, so `npm run dev` and any build made
-  before the AdSense account exists never depends on a live account and
-  never shows a blank or broken ad unit.
+  before this site has its own ad unit never shows a blank or broken ad slot.
 - **[`public/ads.txt`](public/ads.txt)** authorizes the domain to serve
-  AdSense ads, per the [ads.txt spec](https://iabtechlab.com/ads-txt/) —
-  also a placeholder publisher ID until launch.
+  AdSense ads, per the [ads.txt spec](https://iabtechlab.com/ads-txt/), using
+  the same real publisher ID.
 
-#### Before going live, replace the placeholder IDs in three places
+#### Before going live, create an ad unit for this site
 
-1. `ADSENSE_CLIENT_ID` and `ADSENSE_SLOT_ID` in
-   [`constants/ads.ts`](constants/ads.ts) — the real publisher ID and an ad
-   unit ID from the AdSense dashboard.
-2. The publisher ID in [`public/ads.txt`](public/ads.txt) (must match
-   `ADSENSE_CLIENT_ID`, without the `ca-` prefix).
-3. Nothing else — `nuxt.config.ts` and `AdSlot.vue` both read from
-   `constants/ads.ts` rather than hardcoding the IDs a second time.
-
-If individual placements need distinct ad units later, pass a `slot` prop to
-any `<AdSlot :slot="..." />` instance to override the shared default. Once
-the site has real traffic and content, submit it for AdSense review from the
-AdSense dashboard.
+The only placeholder left is `ADSENSE_SLOT_ID` in
+[`constants/ads.ts`](constants/ads.ts) — create an ad unit for this site in
+AdSense → Ads → By ad unit and paste its numeric ID in. (`nuxt.config.ts`,
+`AdSlot.vue`, and `public/ads.txt` all already use the real publisher ID and
+need no further changes.) If individual placements need distinct ad units
+later, pass a `slot` prop to any `<AdSlot :slot="..." />` instance to
+override the shared default. Once the site has real traffic and content,
+submit it for AdSense review from the AdSense dashboard.
 
 ## Header, footer, and the PDF Tool PH link
 
@@ -511,10 +510,11 @@ AdSense:
   jurisdiction, retention practices, and consent implementation.
 - **Rate verification:** cross-check every 2026 bracket and program statement
   against the latest primary agency circulars before using “2026” in production.
-- **Ad configuration:** replace the placeholder IDs in `constants/ads.ts` and
-  `public/ads.txt` (see the "AdSense wiring" checklist above) and, if serving
-  visitors in the EEA/UK/Switzerland, add the appropriate consent experience
-  before real ads go live.
+- **Ad configuration:** the AdSense publisher ID is already real (shared
+  with pdf-tool-ph); create and set a real `ADSENSE_SLOT_ID` in
+  `constants/ads.ts` (see the "AdSense wiring" checklist above) and, if
+  serving visitors in the EEA/UK/Switzerland, add the appropriate consent
+  experience before real ads go live.
 - **Cross-promo link:** `PDF_TOOL_PH_URL` in `constants/links.ts` is already
   the real PDF Tool PH URL — nothing to swap here, just re-confirm it's still
   correct before launch.
