@@ -1,3 +1,5 @@
+import { ADSENSE_CLIENT_ID } from './constants/ads'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -70,6 +72,18 @@ export default defineNuxtConfig({
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap'
+        }
+      ],
+      script: [
+        {
+          // AdSense site-verification/auto-ads loader — required in every
+          // page's <head> regardless of whether any individual <AdSlot />
+          // is requesting an ad. ADSENSE_CLIENT_ID is a placeholder (see
+          // constants/ads.ts) until the AdSense account is approved.
+          key: 'adsbygoogle',
+          src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`,
+          async: true,
+          crossorigin: 'anonymous'
         }
       ]
     }

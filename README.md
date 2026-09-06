@@ -393,31 +393,71 @@ Because each page is its own route, only one page's markup is ever mounted
 at a time, so only one ad slot is ever on screen.
 
 The Privacy Policy discloses the intended use of Google advertising cookies
-and data. Before enabling ad tags, configure the required AdSense publisher
-and ad-unit IDs and, if ads will be served to visitors in the EEA, UK, or
-Switzerland, configure a Google-certified consent management platform. The
-repository does not include a live consent flow or AdSense account settings.
+and data. If ads will be served to visitors in the EEA, UK, or Switzerland,
+configure a Google-certified consent management platform — the repository
+does not include a live consent flow.
 
-To go live, replace the placeholder `<div>` in `AdSlot.vue` with a real
-AdSense `<ins class="adsbygoogle">` unit (see the comment at the top of that
-file for the exact markup), and add the AdSense loader script once, globally,
-in `nuxt.config.ts` (`app.head.script`).
+### AdSense wiring
+
+The real AdSense integration is wired up, behind placeholder IDs:
+
+- **[`constants/ads.ts`](constants/ads.ts)** is the single source of truth
+  for `ADSENSE_CLIENT_ID` and `ADSENSE_SLOT_ID` — both currently placeholders
+  (`ca-pub-XXXXXXXXXXXXXXXX` / `XXXXXXXXXX`), and `ADSENSE_IS_CONFIGURED`,
+  which is `false` until both are replaced with real values.
+- **[`nuxt.config.ts`](nuxt.config.ts)** (`app.head.script`) loads the
+  AdSense loader script (`adsbygoogle.js`) once, globally, in every page's
+  `<head>`, built from `ADSENSE_CLIENT_ID`.
+- **[`AdSlot.vue`](components/AdSlot.vue)** renders a real
+  `<ins class="adsbygoogle">` unit and calls
+  `(adsbygoogle = window.adsbygoogle || []).push({})` on mount to request an
+  ad — but only when `ADSENSE_IS_CONFIGURED` is true **and** the app isn't
+  running in local dev (`import.meta.dev`). Otherwise it falls back to the
+  original labeled placeholder `<div>`, so `npm run dev` and any build made
+  before the AdSense account exists never depends on a live account and
+  never shows a blank or broken ad unit.
+- **[`public/ads.txt`](public/ads.txt)** authorizes the domain to serve
+  AdSense ads, per the [ads.txt spec](https://iabtechlab.com/ads-txt/) —
+  also a placeholder publisher ID until launch.
+
+#### Before going live, replace the placeholder IDs in three places
+
+1. `ADSENSE_CLIENT_ID` and `ADSENSE_SLOT_ID` in
+   [`constants/ads.ts`](constants/ads.ts) — the real publisher ID and an ad
+   unit ID from the AdSense dashboard.
+2. The publisher ID in [`public/ads.txt`](public/ads.txt) (must match
+   `ADSENSE_CLIENT_ID`, without the `ca-` prefix).
+3. Nothing else — `nuxt.config.ts` and `AdSlot.vue` both read from
+   `constants/ads.ts` rather than hardcoding the IDs a second time.
+
+If individual placements need distinct ad units later, pass a `slot` prop to
+any `<AdSlot :slot="..." />` instance to override the shared default. Once
+the site has real traffic and content, submit it for AdSense review from the
+AdSense dashboard.
 
 ## Header, footer, and the PDF Tool PH link
 
 [`AppHeader.vue`](components/AppHeader.vue) and
 [`AppFooter.vue`](components/AppFooter.vue) are rendered on every page via
-[`layouts/default.vue`](layouts/default.vue). The footer includes the site
-name/tagline, the rates disclaimer, and a links row with the Government
-Benefits Guide and a cross-promotional link to **PDF Tool PH**, a sibling
-tool from the same builder.
+[`layouts/default.vue`](layouts/default.vue).
 
-The `PDF_TOOL_PH_URL` constant in [`AppFooter.vue`](components/AppFooter.vue)
-points to the real PDF Tool PH site (`http://pdf-tool-ph.com/`) and opens in
-a new tab.
+The header is a sticky bar with the logo, a desktop nav row (Home, a
+**Tools** dropdown listing the six calculators, Government Benefits Guide,
+FAQ, and an external PDF Tool PH link), and a hamburger button below the
+`md` breakpoint that opens a stacked mobile menu with the same links
+flattened into one list. The Tools dropdown and mobile menu both close on
+outside click, on Escape-equivalent navigation, and on route change.
 
-The footer also links to the Government Benefits Guide, About page, Privacy
-Policy, and Terms of Use on every route.
+The footer keeps the site name/tagline and the rates disclaimer, and
+organizes its links into three columns — **Tools** (all six calculators plus
+the Government Benefits Guide), **Company** (About, FAQ, PDF Tool PH), and
+**Legal** (Privacy Policy, Terms of Use) — which stack vertically on narrow
+viewports.
+
+The `PDF_TOOL_PH_URL` constant in [`constants/links.ts`](constants/links.ts)
+— shared by both the header and the footer, so they can't drift — points to
+the real PDF Tool PH site (`http://pdf-tool-ph.com/`) and opens in a new tab
+from both places.
 
 ## SEO, FAQ schema, and discovery
 
@@ -471,9 +511,13 @@ AdSense:
   jurisdiction, retention practices, and consent implementation.
 - **Rate verification:** cross-check every 2026 bracket and program statement
   against the latest primary agency circulars before using “2026” in production.
-- **Ad configuration:** add the real AdSense publisher/ad-unit IDs, ads.txt if
-  required by the account, and the appropriate consent experience before loading
-  advertising scripts.
+- **Ad configuration:** replace the placeholder IDs in `constants/ads.ts` and
+  `public/ads.txt` (see the "AdSense wiring" checklist above) and, if serving
+  visitors in the EEA/UK/Switzerland, add the appropriate consent experience
+  before real ads go live.
+- **Cross-promo link:** `PDF_TOOL_PH_URL` in `constants/links.ts` is already
+  the real PDF Tool PH URL — nothing to swap here, just re-confirm it's still
+  correct before launch.
 
 ## UX notes
 
