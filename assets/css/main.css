@@ -2,30 +2,511 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==================================================================== */
+/* Material 3 design tokens                                             */
+/*                                                                      */
+/* A tonal palette generated from a single trustworthy blue seed        */
+/* (#0B57D0), following Material 3 "Material You" role naming: primary, */
+/* secondary, tertiary, surface, and their "on-*"/"container" pairs.    */
+/* Light values live on :root; dark values override the same variables  */
+/* under prefers-color-scheme so every component just reads the token   */
+/* and gets the right theme automatically.                              */
+/* ==================================================================== */
+:root {
+  color-scheme: light dark;
+
+  /* Primary — trustworthy blue seed */
+  --md-primary: #0b57d0;
+  --md-on-primary: #ffffff;
+  --md-primary-container: #d3e3fd;
+  --md-on-primary-container: #041e49;
+
+  /* Secondary — neutral blue-gray, used for the frequency segmented control etc. */
+  --md-secondary: #575e71;
+  --md-on-secondary: #ffffff;
+  --md-secondary-container: #dbe2f9;
+  --md-on-secondary-container: #141b2c;
+
+  /* Tertiary — teal accent, used sparingly for the 13th-month tab */
+  --md-tertiary: #00696c;
+  --md-on-tertiary: #ffffff;
+  --md-tertiary-container: #a4eeed;
+  --md-on-tertiary-container: #002021;
+
+  /* Error */
+  --md-error: #b3261e;
+  --md-on-error: #ffffff;
+  --md-error-container: #f9dedc;
+  --md-on-error-container: #410e0b;
+
+  /* Warning (not a formal M3 role, derived the same way for the "partly taxable" state) */
+  --md-warning: #8a5500;
+  --md-on-warning: #ffffff;
+  --md-warning-container: #ffddb0;
+  --md-on-warning-container: #2b1700;
+
+  /* Neutral surfaces */
+  --md-background: #f8f9ff;
+  --md-on-background: #1a1c1e;
+  --md-surface: #f8f9ff;
+  --md-on-surface: #1a1c1e;
+  --md-surface-variant: #e1e2ec;
+  --md-on-surface-variant: #44474e;
+  --md-outline: #74777f;
+  --md-outline-variant: #c4c6d0;
+
+  --md-surface-container-lowest: #ffffff;
+  --md-surface-container-low: #f2f3fa;
+  --md-surface-container: #eceef4;
+  --md-surface-container-high: #e6e8ef;
+  --md-surface-container-highest: #e1e2e9;
+
+  --md-shadow: 0 0 0;
+
+  /* Shape scale */
+  --md-shape-xs: 4px;
+  --md-shape-sm: 8px;
+  --md-shape-md: 12px;
+  --md-shape-lg: 16px;
+  --md-shape-xl: 28px;
+  --md-shape-full: 999px;
+
+  /* Elevation scale (official M3 shadow specs) */
+  --md-elevation-0: none;
+  --md-elevation-1: 0 1px 2px 0 rgba(var(--md-shadow) / 0.3), 0 1px 3px 1px rgba(var(--md-shadow) / 0.15);
+  --md-elevation-2: 0 1px 2px 0 rgba(var(--md-shadow) / 0.3), 0 2px 6px 2px rgba(var(--md-shadow) / 0.15);
+  --md-elevation-3: 0 1px 3px 0 rgba(var(--md-shadow) / 0.3), 0 4px 8px 3px rgba(var(--md-shadow) / 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --md-primary: #aac7ff;
+    --md-on-primary: #002e69;
+    --md-primary-container: #004494;
+    --md-on-primary-container: #d3e3fd;
+
+    --md-secondary: #bfc6dc;
+    --md-on-secondary: #293042;
+    --md-secondary-container: #3f4759;
+    --md-on-secondary-container: #dbe2f9;
+
+    --md-tertiary: #4ddbde;
+    --md-on-tertiary: #003738;
+    --md-tertiary-container: #004f51;
+    --md-on-tertiary-container: #a4eeed;
+
+    --md-error: #f2b8b5;
+    --md-on-error: #601410;
+    --md-error-container: #8c1d18;
+    --md-on-error-container: #f9dedc;
+
+    --md-warning: #ffb951;
+    --md-on-warning: #452b00;
+    --md-warning-container: #623f00;
+    --md-on-warning-container: #ffddb0;
+
+    --md-background: #111318;
+    --md-on-background: #e2e2e9;
+    --md-surface: #111318;
+    --md-on-surface: #e2e2e9;
+    --md-surface-variant: #44474e;
+    --md-on-surface-variant: #c4c6d0;
+    --md-outline: #8e9099;
+    --md-outline-variant: #44474e;
+
+    --md-surface-container-lowest: #0c0e13;
+    --md-surface-container-low: #1a1c1e;
+    --md-surface-container: #1e2022;
+    --md-surface-container-high: #282a2d;
+    --md-surface-container-highest: #333438;
+
+    --md-shadow: 0 0 0;
+  }
+}
+
+/* ==================================================================== */
+/* Base                                                                  */
+/* ==================================================================== */
 @layer base {
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-slate-50 text-slate-800;
+    background-color: var(--md-background);
+    color: var(--md-on-background);
+    font-family: 'Google Sans Text', 'Google Sans', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
+/* ==================================================================== */
+/* Type scale (subset of the M3 type scale actually used in this app)   */
+/* ==================================================================== */
 @layer components {
-  .card {
-    @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6;
+  .md-display-small {
+    font-size: 2rem;
+    line-height: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .md-headline-medium {
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+    font-weight: 400;
+  }
+  .md-headline-small {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 400;
+  }
+  .md-title-large {
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    font-weight: 500;
+  }
+  .md-title-medium {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+    letter-spacing: 0.009375em;
+  }
+  .md-body-large {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 400;
+  }
+  .md-body-medium {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 400;
+  }
+  .md-label-large {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.00625em;
   }
 
-  .btn-primary {
-    @apply inline-flex w-full items-center justify-center rounded-xl bg-brand-600 px-5 py-3 text-base font-semibold text-white transition hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto;
+  /* Prose used inside explainer accordion panels */
+  .m3-prose {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--md-on-surface-variant);
   }
-
-  .input-field {
-    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200;
+  .m3-prose p + p {
+    margin-top: 0.75rem;
   }
+  .m3-prose strong,
+  .m3-prose em {
+    color: var(--md-on-surface);
+  }
+}
 
-  .section-title {
-    @apply text-2xl font-bold text-slate-900 sm:text-3xl;
+/* ==================================================================== */
+/* Surfaces & cards                                                      */
+/* ==================================================================== */
+.m3-card {
+  background-color: var(--md-surface-container-low);
+  color: var(--md-on-surface);
+  border-radius: var(--md-shape-lg);
+  box-shadow: var(--md-elevation-1);
+}
+
+.m3-card-elevated {
+  box-shadow: var(--md-elevation-2);
+}
+
+/* Cards that act as links (e.g. the hub's tool cards) — lift on hover/focus. */
+.m3-card-hoverable {
+  display: block;
+  text-decoration: none;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.m3-card-hoverable:hover,
+.m3-card-hoverable:focus-visible {
+  box-shadow: var(--md-elevation-2);
+  transform: translateY(-2px);
+}
+
+/* ==================================================================== */
+/* Buttons                                                               */
+/* ==================================================================== */
+.m3-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 1.5rem;
+  border-radius: var(--md-shape-full);
+  border: none;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.00625em;
+  cursor: pointer;
+  user-select: none;
+  transition: box-shadow 0.2s ease, filter 0.15s ease, background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.m3-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  box-shadow: none !important;
+}
+
+.m3-btn-filled {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  box-shadow: var(--md-elevation-1);
+}
+.m3-btn-filled:hover:not(:disabled) {
+  box-shadow: var(--md-elevation-2);
+  filter: brightness(1.06);
+}
+.m3-btn-filled:active:not(:disabled) {
+  box-shadow: var(--md-elevation-1);
+  filter: brightness(0.97);
+}
+
+.m3-btn-tonal {
+  background-color: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+}
+.m3-btn-tonal:hover:not(:disabled) {
+  box-shadow: var(--md-elevation-1);
+}
+
+.m3-btn-outlined {
+  background-color: transparent;
+  color: var(--md-primary);
+  border: 1px solid var(--md-outline);
+}
+.m3-btn-outlined:hover:not(:disabled) {
+  background-color: var(--md-surface-container-highest);
+}
+
+.m3-btn-full {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .m3-btn-full {
+    width: auto;
+  }
+}
+
+/* ==================================================================== */
+/* Ripple state layer — see plugins/ripple.client.ts                    */
+/* ==================================================================== */
+.m3-ripple-host {
+  position: relative;
+  overflow: hidden;
+}
+.m3-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background-color: currentColor;
+  opacity: 0.2;
+  pointer-events: none;
+  animation: m3-ripple-anim 550ms ease-out forwards;
+}
+@keyframes m3-ripple-anim {
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m3-ripple {
+    animation: none;
+    display: none;
+  }
+}
+
+/* ==================================================================== */
+/* Text fields (M3 "filled" style with floating label)                  */
+/* ==================================================================== */
+.m3-field {
+  position: relative;
+}
+.m3-field-control {
+  width: 100%;
+  height: 3.5rem;
+  padding: 1.5rem 1rem 0.5rem;
+  border: none;
+  border-radius: var(--md-shape-xs) var(--md-shape-xs) 0 0;
+  background-color: var(--md-surface-container-highest);
+  color: var(--md-on-surface);
+  font-family: inherit;
+  font-size: 1rem;
+  box-shadow: inset 0 -1px 0 0 var(--md-outline);
+  outline: none;
+  transition: box-shadow 0.15s ease;
+  appearance: none;
+}
+.m3-field-control::placeholder {
+  color: transparent;
+}
+.m3-field-control:focus {
+  box-shadow: inset 0 -2px 0 0 var(--md-primary);
+}
+.m3-field-label {
+  position: absolute;
+  left: 1rem;
+  top: 1.125rem;
+  max-width: calc(100% - 2rem);
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+  color: var(--md-on-surface-variant);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform-origin: left top;
+  transition: transform 0.15s ease, color 0.15s ease, top 0.15s ease;
+}
+.m3-field.is-active .m3-field-label {
+  top: 0.5rem;
+  transform: scale(0.75);
+}
+.m3-field.is-focused .m3-field-label {
+  color: var(--md-primary);
+}
+.m3-field-support {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--md-on-surface-variant);
+  padding: 0 1rem;
+}
+
+/* ==================================================================== */
+/* Segmented controls (tab bar + pay-frequency picker)                  */
+/* ==================================================================== */
+.m3-segmented {
+  display: inline-flex;
+  width: 100%;
+  background-color: var(--md-surface-container-highest);
+  border-radius: var(--md-shape-full);
+  padding: 4px;
+  gap: 4px;
+}
+.m3-segment {
+  position: relative;
+  overflow: hidden;
+  flex: 1 1 0%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border: none;
+  background-color: transparent;
+  border-radius: var(--md-shape-full);
+  color: var(--md-on-surface-variant);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.m3-segment.is-active {
+  background-color: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+}
+.m3-segment .m3-segment-check {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
+
+/* ==================================================================== */
+/* Accordion (collapsed-by-default explainer content)                   */
+/* ==================================================================== */
+.m3-accordion-item + .m3-accordion-item {
+  border-top: 1px solid var(--md-outline-variant);
+}
+.m3-accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0.25rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--md-on-surface);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  -webkit-tap-highlight-color: transparent;
+}
+.m3-accordion-chevron {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--md-on-surface-variant);
+  transition: transform 0.2s ease;
+}
+.m3-accordion-trigger[aria-expanded='true'] .m3-accordion-chevron {
+  transform: rotate(180deg);
+}
+.m3-accordion-panel {
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+.m3-accordion-panel-content {
+  padding: 0 0.25rem 1.125rem;
+}
+
+/* ==================================================================== */
+/* Vue <Transition> hooks — view switches & result updates               */
+/* ==================================================================== */
+.tab-fade-enter-active,
+.tab-fade-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.tab-fade-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.tab-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+.tab-fade-leave-active {
+  position: absolute;
+  width: 100%;
+}
+
+.result-pop-enter-active {
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+.result-pop-enter-from {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+.result-pop-leave-active {
+  transition: opacity 0.12s ease;
+}
+.result-pop-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-fade-enter-active,
+  .tab-fade-leave-active,
+  .result-pop-enter-active,
+  .result-pop-leave-active {
+    transition: none;
   }
 }

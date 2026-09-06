@@ -122,6 +122,31 @@ export const BIR_ANNUAL_TAX_BRACKETS: TaxBracket[] = [
 ]
 
 /* ------------------------------------------------------------------ */
+/* Pag-IBIG MP2 (voluntary savings)                                     */
+/* ------------------------------------------------------------------ */
+
+export const MP2_CONFIG = {
+  /** Minimum allowed monthly contribution — there is no upper limit. */
+  minMonthlyContribution: 500,
+  /** Lock-in / maturity term per enrollment, in years. Members may re-enroll after maturity. */
+  lockInYears: 5,
+  /**
+   * A recent published Pag-IBIG MP2 annual dividend rate, used only as the
+   * calculator's starting/default value. MP2 dividends are declared once a
+   * year by the Pag-IBIG Fund Board based on actual fund performance and are
+   * NOT guaranteed — this default should be treated as a placeholder for the
+   * user to override, not a promised return.
+   */
+  defaultAnnualDividendRate: 0.07
+}
+
+export const MP2_DIVIDEND_DISCLAIMER =
+  'This is a projection based on the annual dividend rate you enter above, not a guarantee. ' +
+  'Pag-IBIG MP2 dividends are declared once a year by the Pag-IBIG Fund Board based on the ' +
+  "fund's actual investment performance and credited to members' average monthly balance — " +
+  'actual rates have varied year to year and may be higher or lower than what you entered.'
+
+/* ------------------------------------------------------------------ */
 /* 13th Month Pay                                                       */
 /* ------------------------------------------------------------------ */
 

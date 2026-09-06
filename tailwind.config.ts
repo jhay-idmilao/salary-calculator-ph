@@ -1,22 +1,20 @@
 import type { Config } from 'tailwindcss'
 
+// Colors, shape, and elevation for this app are Material 3 design tokens
+// implemented as CSS custom properties in assets/css/main.css (so they can
+// swap between the light and dark tonal palettes at runtime). We reference
+// them from Tailwind via arbitrary values, e.g. `bg-[var(--md-primary)]`,
+// rather than duplicating the palette here.
 export default <Partial<Config>>{
   theme: {
     extend: {
-      colors: {
-        brand: {
-          50: '#eff9f3',
-          100: '#d7f0e1',
-          200: '#b1e0c4',
-          300: '#80c9a1',
-          400: '#4fac7c',
-          500: '#2f8f60',
-          600: '#21734c',
-          700: '#1c5c3f',
-          800: '#194a34',
-          900: '#153d2c',
-          950: '#0a2219'
-        }
+      fontFamily: {
+        // 'Google Sans' is a proprietary Google typeface with no public
+        // webfont — it's listed first so devices that already have it
+        // installed (Pixel, ChromeOS, Google Workspace apps) pick it up for
+        // free. Everyone else falls through to Roboto, loaded from Google
+        // Fonts, which is Material Design's own official typeface.
+        sans: ['"Google Sans Text"', '"Google Sans"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
       }
     }
   }

@@ -1,6 +1,10 @@
 <script setup lang="ts">
 /**
- * Placeholder ad slot.
+ * The single, shared ad placeholder for the whole app. Each tab mounts one
+ * instance of this component below its results/explainer content — never
+ * above or beside the calculator — and because the tabs are mutually
+ * exclusive (only the active tab's markup exists in the DOM), exactly one
+ * ad slot is ever rendered on screen at a time.
  *
  * Swap the placeholder <div> below for a real AdSense unit, e.g.:
  *
@@ -34,12 +38,13 @@ withDefaults(
 
 <template>
   <div
-    class="ad-slot flex min-h-[100px] w-full items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-100 px-4 py-8 text-center"
+    class="flex min-h-[100px] w-full items-center justify-center rounded-[var(--md-shape-lg)] px-4 py-8 text-center"
+    style="background-color: var(--md-surface-container); border: 1px dashed var(--md-outline-variant)"
     role="complementary"
     :aria-label="label"
     data-ad-placeholder="true"
   >
-    <span class="text-xs font-medium uppercase tracking-wide text-slate-400">
+    <span class="md-label-large" style="color: var(--md-on-surface-variant)">
       {{ label }} — ad slot placeholder
     </span>
   </div>
