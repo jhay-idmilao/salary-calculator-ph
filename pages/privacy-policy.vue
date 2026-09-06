@@ -80,7 +80,7 @@ setPageSeo({
         <p>
           This policy may be updated when the site adds providers or changes how it operates. The
           effective date above will be revised for material changes. Privacy questions may be sent
-          to <a class="content-link" href="mailto:hello@pdftool.ph">hello@pdftool.ph</a>; do not
+          to <a class="content-link" href="mailto:pdftoolph@gmail.com">pdftoolph@gmail.com</a>; do not
           include salary records or sensitive identifiers.
         </p>
       </section>

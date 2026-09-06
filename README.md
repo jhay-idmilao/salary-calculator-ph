@@ -503,7 +503,7 @@ AdSense:
 
 - **Owner and contact:** the About page intentionally describes the builder
   generically. The contact address on About, Privacy, and Terms is
-  `hello@pdftool.ph` — confirm that mailbox is actually monitored before
+  `pdftoolph@gmail.com` — confirm that mailbox is actually monitored before
   launch, or swap in a different one if not.
 - **Legal review:** Privacy and Terms are practical starter documents, not legal
   advice. Review them for the operator's real business, providers, audience,
