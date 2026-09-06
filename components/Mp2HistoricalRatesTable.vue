@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MP2_CONFIG, MP2_HISTORICAL_DIVIDEND_RATES } from '~/constants/rates2026'
+import { MP2_CONFIG, MP2_HISTORICAL_DIVIDEND_RATES, type Mp2HistoricalDividendRate } from '~/constants/rates2026'
 
 type SortMode = 'year' | 'rate'
 
@@ -7,12 +7,12 @@ const sortMode = ref<SortMode>('year')
 
 const RECENT_YEARS_COUNT = 5
 
-const sortedByYearDesc = computed(() =>
+const sortedByYearDesc = computed<Mp2HistoricalDividendRate[]>(() =>
   [...MP2_HISTORICAL_DIVIDEND_RATES].sort((a, b) => b.year - a.year)
 )
 
 /** The table rows in the currently selected order — latest-first by default. */
-const displayedRates = computed(() => {
+const displayedRates = computed<Mp2HistoricalDividendRate[]>(() => {
   if (sortMode.value === 'rate') {
     return [...MP2_HISTORICAL_DIVIDEND_RATES].sort((a, b) => b.rate - a.rate)
   }
@@ -27,15 +27,17 @@ const allTimeAverage = computed(() => {
   return sum / MP2_HISTORICAL_DIVIDEND_RATES.length
 })
 
-const recentEntries = computed(() => sortedByYearDesc.value.slice(0, RECENT_YEARS_COUNT))
+const recentEntries = computed<Mp2HistoricalDividendRate[]>(() =>
+  sortedByYearDesc.value.slice(0, RECENT_YEARS_COUNT)
+)
 
 const recentAverage = computed(() => {
-  const sum = recentEntries.value.reduce((total, entry) => total + entry.rate, 0)
+  const sum = recentEntries.value.reduce((total: number, entry: Mp2HistoricalDividendRate) => total + entry.rate, 0)
   return sum / recentEntries.value.length
 })
 
 const recentRangeLabel = computed(() => {
-  const years = recentEntries.value.map((entry) => entry.year)
+  const years = recentEntries.value.map((entry: Mp2HistoricalDividendRate) => entry.year)
   return `${Math.min(...years)}–${Math.max(...years)}`
 })
 

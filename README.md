@@ -202,6 +202,28 @@ fixed-monthly, flexible with gaps and a lump sum, and the hybrid
 base-plus-extras case, including an exact-equivalence test between the
 regular and flexible engines for the same uniform schedule).
 
+## Type checking
+
+```bash
+npm run typecheck
+```
+
+Runs `vue-tsc` against every `.vue`/`.ts` file. `nuxt generate` does **not**
+typecheck — Vite strips types without reading them, so a type error builds
+and deploys perfectly happily and only shows up at runtime. This is the only
+thing in the pipeline that actually catches one.
+
+## Continuous integration
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push to
+`main` and every pull request: install → typecheck → `npm run test` → build
+(`npm run generate`). Cloudflare Pages' own Git integration handles the
+actual deployment (CD) separately — this workflow only covers the checks a
+green Cloudflare build wouldn't: type errors and a broken calculation. Node
+version is pinned in [`.nvmrc`](.nvmrc), read by both this workflow and
+(if configured to do so) Cloudflare's build image, so CI and the deploy
+build never silently run different runtimes.
+
 ## Building for production
 
 ```bash
@@ -236,6 +258,46 @@ You can also test the production build locally before deploying:
 npm run generate
 npx wrangler pages dev dist
 ```
+
+### Troubleshooting: "Missing entry-point to Worker script or to assets directory"
+
+If a Cloudflare Pages build succeeds (all routes prerendered) but the
+**deploy** step then fails with this error after running
+`Executing user deploy command: npx wrangler deploy`, the project has a
+custom **Deploy command** configured in its dashboard settings that doesn't
+belong there. `wrangler deploy` is the generic Workers deploy command; a
+plain static Pages project doesn't need a deploy command at all — Cloudflare
+uploads the **Build output directory** (`dist`) automatically once the build
+finishes. Fix it in the Cloudflare dashboard, not in this repo:
+
+1. Open the Pages project → **Settings → Builds & deployments**.
+2. Clear the **Deploy command** field entirely (leave it blank).
+3. Confirm **Build command** is `npm run generate` (or `npm run build` —
+   both run `nuxt generate` and produce the same static-only output, with no
+   Cloudflare Worker component) and **Build output directory** is `dist`.
+4. Retrigger the deployment.
+
+### Production domain
+
+The site is meant to be served at **`https://sahod.pdf-tool-ph.com`** (no
+trailing slash) — that's the value of `SITE_URL` in
+[`utils/seo.ts`](utils/seo.ts), which every canonical link, Open Graph/
+Twitter Card tag, and JSON-LD `url` field is built from, and it's also
+hardcoded into `public/sitemap.xml` and the `Sitemap:` line in
+`public/robots.txt` (both are static files, not generated at build time, so
+they need editing by hand if the domain ever changes again).
+
+To go live on that domain in the Cloudflare Pages project:
+
+1. Open the Pages project → **Custom domains** → **Set up a custom domain**.
+2. Enter `sahod.pdf-tool-ph.com`.
+3. If the `pdf-tool-ph.com` zone is already in the **same Cloudflare
+   account**, Cloudflare adds the required CNAME record automatically and
+   activation is usually immediate. If the zone lives in a different
+   account (or isn't on Cloudflare at all), you'll instead be shown a CNAME
+   target to add manually in that zone's DNS.
+4. Cloudflare issues the TLS certificate for the subdomain automatically
+   once DNS resolves — no separate certificate step needed.
 
 ## Updating rates for a new year
 
@@ -406,15 +468,10 @@ Policy, and Terms of Use on every route.
 Replace or verify all of these before making the site public or applying for
 AdSense:
 
-- **Canonical site URL:** `https://sahod-calculator.pages.dev` is the current
-  placeholder in [`utils/seo.ts`](utils/seo.ts),
-  [`public/sitemap.xml`](public/sitemap.xml), and
-  [`public/robots.txt`](public/robots.txt). Replace it everywhere if the real
-  production origin is different.
 - **Owner and contact:** the About page intentionally describes the builder
-  generically, and `hello@example.com` in About, Privacy, and Terms is a
-  placeholder. Add the operator's real name or organization details as desired
-  and replace the address with a monitored mailbox.
+  generically. The contact address on About, Privacy, and Terms is
+  `hello@pdftool.ph` — confirm that mailbox is actually monitored before
+  launch, or swap in a different one if not.
 - **Legal review:** Privacy and Terms are practical starter documents, not legal
   advice. Review them for the operator's real business, providers, audience,
   jurisdiction, retention practices, and consent implementation.

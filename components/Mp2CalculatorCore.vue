@@ -36,7 +36,7 @@ const flexibleTermMonths = computed(() => MP2_CONFIG.lockInYears * 12)
 
 /** Running total of everything currently in the flexible-mode list, live as it's built. */
 const runningListTotal = computed(() =>
-  entries.value.reduce((sum, entry) => sum + (entry.amount ?? 0), 0)
+  entries.value.reduce((sum: number, entry: EntryRow) => sum + (entry.amount ?? 0), 0)
 )
 
 const hasComputed = ref(false)
@@ -46,8 +46,8 @@ const { calculate, calculateFromEntries } = useMp2Calculator()
 
 const validEntries = computed<Mp2ContributionEntry[]>(() =>
   entries.value
-    .filter((entry) => entry.month !== null && entry.amount !== null && entry.amount > 0)
-    .map((entry) => ({ month: entry.month as number, amount: entry.amount as number }))
+    .filter((entry: EntryRow) => entry.month !== null && entry.amount !== null && entry.amount > 0)
+    .map((entry: EntryRow) => ({ month: entry.month as number, amount: entry.amount as number }))
 )
 
 const result = computed(() => {

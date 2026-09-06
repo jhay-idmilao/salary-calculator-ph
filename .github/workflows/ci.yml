@@ -1,0 +1,50 @@
+name: CI
+
+# Cloudflare Pages handles deployment (CD) via its Git integration. This
+# workflow is the CI half: the checks that a green Cloudflare build would
+# NOT catch.
+#
+# The important one is typecheck. `nuxt generate` does not typecheck — Vite
+# strips types without reading them — so a type error builds and deploys
+# perfectly happily and only shows up at runtime. A green Cloudflare build
+# tells you nothing about types; this does.
+#
+# The other is the calculation test suite (SSS/PhilHealth/Pag-IBIG/
+# withholding tax/13th month/MP2). A wrong number in a payroll calculator is
+# silent — it looks exactly like a right number — until someone budgets
+# their paycheck on it. Nothing else in the pipeline checks this.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A new push to the same branch makes the previous run irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Same source of truth Cloudflare reads, so CI and the deploy
+          # build cannot silently run different runtimes.
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test calculation composables
+        run: npm run test
+
+      - name: Build
+        run: npm run generate
