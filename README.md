@@ -3,21 +3,31 @@
 A free, ad-monetized hub of Philippine payroll calculators. Nuxt 3 app, built
 as a Material 3 ("Material You") experience: a home/landing view shows one
 card per tool, and each card opens its own dedicated, SEO-friendly page
-(`/salary-calculator`, `/sss-calculator`, etc.) rather than a tab. Fully
-static, no backend, no database, no auth — everything runs client-side in the
-browser.
+(`/salary-calculator`, `/sss-contribution-calculator`, etc.) with a real,
+crawlable URL — not a client-side tab/view switch. Fully static, no backend,
+no database, no auth — everything runs client-side in the browser.
 
 ## Tools
 
+Every route below is a real Nuxt page (its own file under `pages/`), gets its
+own prerendered static HTML file, and has its own `<title>`, meta
+description, canonical URL, and (where relevant) JSON-LD schema — see
+[SEO & routing](#seo--routing) below.
+
 | Tool | Route |
 |---|---|
+| Tools hub / landing page | `/` |
 | Salary Calculator (SSS, PhilHealth, Pag-IBIG, withholding tax, net pay) | `/salary-calculator` |
-| 13th Month Pay Calculator | `/13th-month-pay` |
-| SSS Contribution Calculator | `/sss-calculator` |
-| PhilHealth Contribution Calculator | `/philhealth-calculator` |
+| 13th Month Pay Calculator | `/13th-month-pay-calculator` |
+| SSS Contribution Calculator | `/sss-contribution-calculator` |
+| PhilHealth Contribution Calculator | `/philhealth-contribution-calculator` |
 | Pag-IBIG MP2 Savings Calculator | `/pagibig-mp2-calculator` |
-| BIR Withholding Tax Calculator | `/withholding-tax-calculator` |
-| Government Benefits Guide (content page) | `/guide` |
+| BIR Withholding Tax Calculator | `/bir-withholding-tax-calculator` |
+| Government Benefits Guide (content page) | `/government-benefits-guide` |
+| FAQ — every calculator's questions, grouped and searchable in one place | `/faq` |
+| About Sahod Calculator | `/about` |
+| Privacy Policy | `/privacy-policy` |
+| Terms of Use | `/terms` |
 
 ## Tech stack
 
@@ -32,14 +42,46 @@ browser.
 
 ## Navigation: hub + cards
 
-[`pages/index.vue`](pages/index.vue) is the hub — a short hero plus a grid of
-[`ToolCard.vue`](components/ToolCard.vue) cards (icon, name, one-line
-description), each a `NuxtLink` to that tool's own route. Every calculator
-page starts with [`CalculatorPageHeader.vue`](components/CalculatorPageHeader.vue),
+[`pages/index.vue`](pages/index.vue) is the hub. It's a full landing page, not
+just a card list — in order: a short hero explaining what the site does and
+who it's for, the grid of [`ToolCard.vue`](components/ToolCard.vue) cards
+(icon, name, one-line description, each a `NuxtLink` to that tool's own
+route) as the primary focus, a "Why use Sahod Calculator?" section (accurate
+2026 rates, free/no signup, mobile-first, runs in-browser), a "How it works"
+3-step section, a callout linking into the Government Benefits Guide and the
+FAQ page, and finally the page's one `<AdSlot />` — after all of that
+content, never above the fold or between the hero and the cards. Every
+calculator page starts with [`CalculatorPageHeader.vue`](components/CalculatorPageHeader.vue),
 which renders a "← Back to all tools" link back to the hub; the logo in
 [`AppHeader.vue`](components/AppHeader.vue) (present on every page, via
 [`layouts/default.vue`](layouts/default.vue)) also links home, so there are
 two ways back to the hub from anywhere in the app.
+
+All of this is real `<NuxtLink>` navigation between real Nuxt routes — there
+is no client-side-only tab/segmented-control view switching anywhere in the
+app. Every link renders as an actual `<a href="...">` in the prerendered
+HTML, each page has its own URL (so the browser back/forward buttons and
+direct linking/bookmarking all work normally), and a crawler can reach every
+page without executing JavaScript.
+
+**Internal linking** goes beyond just the hub grid, so each page is
+reachable from more than one path:
+
+- The **Salary Calculator** links out to the standalone SSS, PhilHealth,
+  BIR withholding tax, and Pag-IBIG MP2 calculators for a more detailed,
+  single-deduction breakdown.
+- The standalone **SSS**, **PhilHealth**, and **BIR withholding tax**
+  calculators each link back to the Salary Calculator for the full
+  paycheck view.
+- The **13th Month Pay** and **Pag-IBIG MP2** calculators link to the
+  Salary Calculator and/or the Government Benefits Guide.
+- The **Government Benefits Guide** links to every calculator it discusses
+  (SSS, PhilHealth, Pag-IBIG MP2, BIR withholding tax) plus the Salary
+  Calculator and 13th Month Pay Calculator.
+- The **hub** links to all seven tool/content pages via its card grid, plus
+  the Government Benefits Guide and FAQ again via its own callout section.
+  The **footer** (present on every page) links to the hub, the guide, the
+  FAQ, About, Privacy Policy, and Terms.
 
 ## Design system: Material 3
 
@@ -94,14 +136,18 @@ plugins/
 layouts/
   default.vue                  # AppHeader + page content + AppFooter, used on every page
 pages/
-  index.vue                    # Hub — hero + grid of ToolCard cards
-  salary-calculator.vue        # Salary Calculator (form + results + explainers + ad slot)
-  13th-month-pay.vue           # 13th Month Pay Calculator
-  sss-calculator.vue           # Standalone SSS Contribution Calculator
-  philhealth-calculator.vue    # Standalone PhilHealth Contribution Calculator
-  pagibig-mp2-calculator.vue   # Pag-IBIG MP2 Savings Calculator
-  withholding-tax-calculator.vue # Standalone BIR Withholding Tax Calculator
-  guide.vue                    # Government Benefits Guide (content page)
+  index.vue                             # Hub — hero + grid of ToolCard cards, links to every route below
+  salary-calculator.vue                 # Salary Calculator (form + results + explainers + ad slot)
+  13th-month-pay-calculator.vue         # 13th Month Pay Calculator
+  sss-contribution-calculator.vue       # Standalone SSS Contribution Calculator
+  philhealth-contribution-calculator.vue # Standalone PhilHealth Contribution Calculator
+  pagibig-mp2-calculator.vue            # Pag-IBIG MP2 Savings Calculator
+  bir-withholding-tax-calculator.vue    # Standalone BIR Withholding Tax Calculator
+  government-benefits-guide.vue         # Government Benefits Guide (content page)
+  faq.vue                               # All 25 FAQs across every calculator, grouped by topic, one combined FAQPage schema
+  about.vue                             # Builder, purpose, methodology, independence disclaimer
+  privacy-policy.vue                    # Calculator, hosting, advertising, cookie, and consent policy
+  terms.vue                             # Estimate limitations and acceptable-use terms
 components/
   AppLogo.vue / AppHeader.vue / AppFooter.vue   # Branding + nav, used via layouts/default.vue
   ToolCard.vue                  # Hub tool card (icon + title + description)
@@ -110,13 +156,26 @@ components/
   ThirteenthMonthCalculator.vue
   SssCalculatorCore.vue / PhilhealthCalculatorCore.vue
   Mp2CalculatorCore.vue / WithholdingTaxCalculatorCore.vue
+  Mp2HistoricalRatesTable.vue   # MP2 dividend-rate history table (sortable, with averages)
   PayFrequencyToggle.vue        # Shared Monthly/Semi-monthly segmented control
   Md3TextField.vue              # M3 filled text field with floating label
-  Md3Accordion.vue              # Collapsed-by-default disclosure for explainer content
+  Md3Accordion.vue              # Collapsed-by-default disclosure — explainer content AND every FAQ item reuse this
   SssExplainer.vue / PhilhealthExplainer.vue / PagibigExplainer.vue
   WithholdingTaxExplainer.vue / ThirteenthMonthExplainer.vue / Mp2Explainer.vue
   RatesDisclaimer.vue
+  FaqSection.vue               # Visible FAQ cards + matching FAQPage JSON-LD
   AdSlot.vue                   # The single, shared ad placeholder — see "Monetization" below
+content/
+  faqs.ts                      # Calculator-specific search questions and plain-language answers
+utils/
+  seo.ts                       # Canonical, Open Graph, Twitter Card, and app-schema metadata
+public/
+  favicon.ico / favicon.svg    # Browser icons based on the header's peso mark
+  apple-touch-icon.png         # iOS bookmark/home-screen icon
+  android-chrome-*.png         # PWA icons, including a maskable variant
+  site.webmanifest             # Install/bookmark metadata
+  sitemap.xml / robots.txt     # Static search-engine discovery files
+  og-image.png                 # Branded social-sharing card
 tests/                         # Vitest specs with known sample computations
 ```
 
@@ -149,8 +208,8 @@ regular and flexible engines for the same uniform schedule).
 npm run generate
 ```
 
-This produces a fully static site — one HTML file per route (hub + 7 tool/
-content pages). With the `cloudflare-pages` Nitro preset, the output is
+This produces a fully static site — one HTML file per route (hub, calculators,
+guide, About, Privacy, and Terms). With the `cloudflare-pages` Nitro preset, the output is
 written to `dist/` (Cloudflare Pages' expected output folder — not
 `.output/public`). All routes are also listed explicitly in
 `nitro.prerender.routes` in [`nuxt.config.ts`](nuxt.config.ts) (on top of
@@ -237,6 +296,27 @@ regular fixed-monthly engine exactly" test in
 contributions can stop early, but any existing balance keeps earning
 dividends until maturity.
 
+### Historical dividend rates
+
+Below the calculator, [`Mp2HistoricalRatesTable.vue`](components/Mp2HistoricalRatesTable.vue)
+shows the actual MP2 dividend rate declared every year since 2010, from
+`MP2_HISTORICAL_DIVIDEND_RATES` in
+[`constants/rates2026.ts`](constants/rates2026.ts) (a plain `{ year, rate }[]`
+— append the next year's rate there once it's officially announced). It's
+reference information only and never feeds into the projection itself:
+
+- Sorted **latest year first** by default, with a sort toggle to switch to
+  **highest rate first** for anyone comparing the best/worst years.
+- Shows the full-history average and the last-5-years average, plus a
+  one-line comparison of the calculator's default projection rate
+  (`MP2_CONFIG.defaultAnnualDividendRate`) against the full-history average,
+  computed dynamically so it stays correct as more years are appended.
+- **⚠️ The 2021 rate is unverified.** Public sources disagree between 5.79%
+  and 6.00%; `MP2_HISTORICAL_DIVIDEND_RATES` uses 5.79% as a placeholder (see
+  the comment above that entry). The UI also flags it with a footnote.
+  Confirm the correct figure against Pag-IBIG's official 2021 dividend rate
+  circular before launch.
+
 ## Monetization (AdSense)
 
 There is exactly **one** `<AdSlot />` per calculator/content screen
@@ -244,14 +324,23 @@ There is exactly **one** `<AdSlot />` per calculator/content screen
 below that page's results/explainer content — never above or beside an input
 form:
 
-- Each of the six calculator pages shows one ad slot below its
-  calculator (always visible, not conditional on a result being computed).
-- The Government Benefits Guide (`/guide`) shows one ad slot after its
-  written content.
-- **The hub (`/`) has zero ad slots.**
+- Each of the six calculator pages shows one ad slot after its calculator,
+  explainer, and FAQ content (always visible, not conditional on a result being computed).
+- The Government Benefits Guide (`/government-benefits-guide`) and the FAQ
+  page (`/faq`) each show one ad slot after their written content.
+- **The hub (`/`) has exactly one ad slot too** — placed at the very end,
+  after the hero, the tool cards, the "Why use this"/"How it works"
+  sections, and the Guide/FAQ callout. It never sits above the fold or
+  between the hero and the cards.
 
 Because each page is its own route, only one page's markup is ever mounted
 at a time, so only one ad slot is ever on screen.
+
+The Privacy Policy discloses the intended use of Google advertising cookies
+and data. Before enabling ad tags, configure the required AdSense publisher
+and ad-unit IDs and, if ads will be served to visitors in the EEA, UK, or
+Switzerland, configure a Google-certified consent management platform. The
+repository does not include a live consent flow or AdSense account settings.
 
 To go live, replace the placeholder `<div>` in `AdSlot.vue` with a real
 AdSense `<ins class="adsbygoogle">` unit (see the comment at the top of that
@@ -270,6 +359,70 @@ tool from the same builder.
 The `PDF_TOOL_PH_URL` constant in [`AppFooter.vue`](components/AppFooter.vue)
 points to the real PDF Tool PH site (`http://pdf-tool-ph.com/`) and opens in
 a new tab.
+
+The footer also links to the Government Benefits Guide, About page, Privacy
+Policy, and Terms of Use on every route.
+
+## SEO, FAQ schema, and discovery
+
+- Every page is a real Nuxt route (its own file under `pages/`), listed in
+  `nitro.prerender.routes` in [`nuxt.config.ts`](nuxt.config.ts) so
+  `nuxt generate` always builds it as its own static HTML file — nothing is
+  left to client-side-only rendering. `crawlLinks: true` is kept as a
+  fallback, but the explicit list is what actually guarantees every route
+  below gets built.
+- Every page has a unique search-focused title and description plus canonical,
+  Open Graph, and Twitter Card metadata from [`utils/seo.ts`](utils/seo.ts).
+  `setPageSeo({ path, ... })` sets `<link rel="canonical" href="{SITE_URL}{path}">`
+  pointing at that page's own clean URL — every page calls it with its own
+  `path`, so there's no duplicate-content ambiguity between the hub and the
+  individual tool pages.
+- Every calculator includes visible, calculator-specific FAQs, rendered as
+  collapsed-by-default Material 3 accordion items (each one is a
+  [`Md3Accordion`](components/Md3Accordion.vue), reusing the same
+  interaction pattern as the explainer sections). The exact same questions
+  and answers are emitted as `FAQPage` JSON-LD by
+  [`FaqSection.vue`](components/FaqSection.vue) directly from the `items`
+  prop — not from the DOM or from which accordion items happen to be
+  expanded — so the structured data is always complete and never describes
+  hidden or different copy, regardless of UI state. Google currently shows
+  FAQ rich results mainly for well-known authoritative government and health
+  sites, so valid markup improves machine-readable context but does not
+  guarantee a rich result.
+- [`pages/faq.vue`](pages/faq.vue) aggregates every calculator's FAQs (25
+  questions across 6 topics) onto one page, grouped under a heading with a
+  link to that topic's calculator, and emits one combined `FAQPage` schema
+  for the whole page (rather than one schema block per topic).
+- Calculator routes include `WebApplication` JSON-LD; the hub uses `WebSite`
+  markup and the guide uses `Article` markup.
+- [`public/sitemap.xml`](public/sitemap.xml) and
+  [`public/robots.txt`](public/robots.txt) are plain static files and are copied
+  unchanged by `nuxt generate`.
+- The favicon, Apple touch icon, Android/PWA icons, web manifest, and generated
+  social card all reuse the blue-and-white peso identity from the app header.
+
+## Before-launch placeholders and checks
+
+Replace or verify all of these before making the site public or applying for
+AdSense:
+
+- **Canonical site URL:** `https://sahod-calculator.pages.dev` is the current
+  placeholder in [`utils/seo.ts`](utils/seo.ts),
+  [`public/sitemap.xml`](public/sitemap.xml), and
+  [`public/robots.txt`](public/robots.txt). Replace it everywhere if the real
+  production origin is different.
+- **Owner and contact:** the About page intentionally describes the builder
+  generically, and `hello@example.com` in About, Privacy, and Terms is a
+  placeholder. Add the operator's real name or organization details as desired
+  and replace the address with a monitored mailbox.
+- **Legal review:** Privacy and Terms are practical starter documents, not legal
+  advice. Review them for the operator's real business, providers, audience,
+  jurisdiction, retention practices, and consent implementation.
+- **Rate verification:** cross-check every 2026 bracket and program statement
+  against the latest primary agency circulars before using “2026” in production.
+- **Ad configuration:** add the real AdSense publisher/ad-unit IDs, ads.txt if
+  required by the account, and the appropriate consent experience before loading
+  advertising scripts.
 
 ## UX notes
 

@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import type { PayFrequency } from '~/constants/rates2026'
+import { salaryFaqs } from '~/content/faqs'
+import { calculatorSchema, setPageSeo } from '~/utils/seo'
 
-useSeoMeta({
-  title: 'Salary Calculator — SSS, PhilHealth, Pag-IBIG, Tax & Net Pay (2026) | Sahod Calculator',
-  description:
-    'Compute your SSS, PhilHealth, and Pag-IBIG contributions, BIR withholding tax, and net take-home pay from your gross salary using 2026 Philippine rates.'
+const pageDescription =
+  'Estimate 2026 Philippine take-home pay with SSS, PhilHealth, Pag-IBIG, and BIR withholding tax deductions from monthly or semi-monthly salary.'
+
+setPageSeo({
+  title: 'Philippine Salary Calculator 2026 – Net Pay & Deductions',
+  description: pageDescription,
+  path: '/salary-calculator',
+  schema: calculatorSchema('Philippine Salary Calculator 2026', pageDescription, '/salary-calculator')
 })
 
 const grossSalary = ref<number | null>(null)
@@ -28,7 +34,7 @@ function onCompute() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-2xl px-4 py-8">
+  <main class="mx-auto max-w-2xl px-4 py-8">
     <CalculatorPageHeader
       title="Salary Calculator"
       description="Enter your gross salary to see your statutory deductions and net take-home pay."
@@ -45,8 +51,6 @@ function onCompute() {
         <ResultsBreakdown v-if="result" :key="resultVersion" :result="result" />
       </Transition>
 
-      <AdSlot label="Sponsored" />
-
       <div class="m3-card p-2 sm:p-3">
         <Md3Accordion title="What is SSS and how are contributions computed?">
           <SssExplainer />
@@ -61,6 +65,23 @@ function onCompute() {
           <WithholdingTaxExplainer />
         </Md3Accordion>
       </div>
+
+      <div class="m3-card p-5 sm:p-6">
+        <p class="md-title-medium mb-2" style="color: var(--md-on-surface)">Want a closer look at one deduction?</p>
+        <p class="md-body-medium" style="color: var(--md-on-surface-variant)">
+          Each contribution has its own dedicated calculator with a more detailed breakdown:
+        </p>
+        <ul class="mt-3 list-disc space-y-1 pl-5 md-body-medium" style="color: var(--md-on-surface-variant)">
+          <li><NuxtLink to="/sss-contribution-calculator" class="content-link">SSS Contribution Calculator</NuxtLink> — Monthly Salary Credit and EC breakdown</li>
+          <li><NuxtLink to="/philhealth-contribution-calculator" class="content-link">PhilHealth Contribution Calculator</NuxtLink> — employee/employer premium split</li>
+          <li><NuxtLink to="/bir-withholding-tax-calculator" class="content-link">BIR Withholding Tax Calculator</NuxtLink> — check just your withholding tax</li>
+          <li><NuxtLink to="/pagibig-mp2-calculator" class="content-link">Pag-IBIG MP2 Savings Calculator</NuxtLink> — project voluntary savings and dividends</li>
+        </ul>
+      </div>
+
+      <FaqSection :items="salaryFaqs" />
+
+      <AdSlot label="Sponsored" />
     </div>
-  </div>
+  </main>
 </template>

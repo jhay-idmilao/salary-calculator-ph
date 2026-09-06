@@ -12,9 +12,12 @@ const props = withDefaults(
   defineProps<{
     title: string
     defaultOpen?: boolean
+    /** Heading level wrapping the trigger button, for correct document outline when nested under a section <h2>. */
+    headingTag?: 'h2' | 'h3' | 'h4'
   }>(),
   {
-    defaultOpen: false
+    defaultOpen: false,
+    headingTag: 'h2'
   }
 )
 
@@ -42,18 +45,20 @@ function toggle() {
 
 <template>
   <div class="m3-accordion-item">
-    <button type="button" class="m3-accordion-trigger" :aria-expanded="isOpen" @click="toggle">
-      <span>{{ title }}</span>
-      <svg class="m3-accordion-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d="M6 9l6 6 6-6"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
+    <component :is="headingTag">
+      <button type="button" class="m3-accordion-trigger" :aria-expanded="isOpen" @click="toggle">
+        <span>{{ title }}</span>
+        <svg class="m3-accordion-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M6 9l6 6 6-6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </component>
     <div ref="panelRef" class="m3-accordion-panel" :style="{ maxHeight }">
       <div class="m3-accordion-panel-content m3-prose">
         <slot />

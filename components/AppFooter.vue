@@ -22,9 +22,17 @@ const PDF_TOOL_PH_URL = 'http://pdf-tool-ph.com/'
       >
         <NuxtLink to="/" class="hover:underline" style="color: var(--md-primary)">All tools</NuxtLink>
         <span aria-hidden="true" style="color: var(--md-outline-variant)">·</span>
-        <NuxtLink to="/guide" class="hover:underline" style="color: var(--md-primary)"
+        <NuxtLink to="/government-benefits-guide" class="hover:underline" style="color: var(--md-primary)"
           >Government Benefits Guide</NuxtLink
         >
+        <span aria-hidden="true" style="color: var(--md-outline-variant)">·</span>
+        <NuxtLink to="/faq" class="hover:underline" style="color: var(--md-primary)">FAQ</NuxtLink>
+        <span aria-hidden="true" style="color: var(--md-outline-variant)">·</span>
+        <NuxtLink to="/about" class="hover:underline" style="color: var(--md-primary)">About</NuxtLink>
+        <span aria-hidden="true" style="color: var(--md-outline-variant)">·</span>
+        <NuxtLink to="/privacy-policy" class="hover:underline" style="color: var(--md-primary)">Privacy</NuxtLink>
+        <span aria-hidden="true" style="color: var(--md-outline-variant)">·</span>
+        <NuxtLink to="/terms" class="hover:underline" style="color: var(--md-primary)">Terms</NuxtLink>
         <span aria-hidden="true" style="color: var(--md-outline-variant)">·</span>
         <a
           :href="PDF_TOOL_PH_URL"

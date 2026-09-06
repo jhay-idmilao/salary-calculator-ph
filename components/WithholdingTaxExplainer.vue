@@ -50,4 +50,17 @@
       </tbody>
     </table>
   </div>
+  <h3 class="md-title-medium">Payroll withholding versus final tax</h3>
+  <p>
+    Withholding is an advance collection, not always the final amount for the year. Employers
+    reconcile actual compensation and tax withheld before issuing BIR Form 2316. A bonus, taxable
+    benefit, prior employer, or payroll correction can therefore make your payslip different from a
+    single-period estimate.
+  </p>
+  <p>
+    Many employees with one employer qualify for substituted filing, but people with multiple
+    employers, business or professional income, or other mixed income may still need to file an
+    annual return. Mandatory employee contributions are considered in the salary calculator;
+    personal loan payments and voluntary savings do not automatically reduce taxable income.
+  </p>
 </template>

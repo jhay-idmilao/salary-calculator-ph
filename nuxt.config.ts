@@ -19,12 +19,16 @@ export default defineNuxtConfig({
       routes: [
         '/',
         '/salary-calculator',
-        '/13th-month-pay',
-        '/sss-calculator',
-        '/philhealth-calculator',
+        '/13th-month-pay-calculator',
+        '/sss-contribution-calculator',
+        '/philhealth-contribution-calculator',
         '/pagibig-mp2-calculator',
-        '/withholding-tax-calculator',
-        '/guide'
+        '/bir-withholding-tax-calculator',
+        '/government-benefits-guide',
+        '/faq',
+        '/about',
+        '/privacy-policy',
+        '/terms'
       ],
       crawlLinks: true
     }
@@ -47,6 +51,10 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#111318', media: '(prefers-color-scheme: dark)' }
       ],
       link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'manifest', href: '/site.webmanifest' },
         // Roboto is Material Design's own reference typeface and our guaranteed
         // fallback — see README for the full "Google Sans" font-stack rationale.
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

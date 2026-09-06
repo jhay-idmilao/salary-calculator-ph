@@ -22,7 +22,7 @@ defineProps<{
       {{ icon }}
     </span>
     <span class="min-w-0">
-      <span class="md-title-medium block" style="color: var(--md-on-surface)">{{ title }}</span>
+      <h2 class="md-title-medium" style="color: var(--md-on-surface)">{{ title }}</h2>
       <span class="mt-1 block md-body-medium" style="color: var(--md-on-surface-variant)">
         {{ description }}
       </span>

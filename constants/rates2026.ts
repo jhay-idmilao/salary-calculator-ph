@@ -146,6 +146,42 @@ export const MP2_DIVIDEND_DISCLAIMER =
   "fund's actual investment performance and credited to members' average monthly balance — " +
   'actual rates have varied year to year and may be higher or lower than what you entered.'
 
+export interface Mp2HistoricalDividendRate {
+  year: number
+  /** Declared annual dividend rate for that year, as a decimal fraction (e.g. 0.0712 = 7.12%). */
+  rate: number
+}
+
+/**
+ * Pag-IBIG MP2 declared annual dividend rates by year, for reference only —
+ * shown alongside the calculator's editable projection rate so users can see
+ * how the actual rate has moved over time. Append the next year's rate here
+ * once it's officially announced.
+ *
+ * ⚠️ The 2021 rate has conflicting figures across public sources (5.79% vs.
+ * 6.00%). 5.79% is used here as a placeholder — verify against Pag-IBIG's
+ * official dividend rate announcement/circular for 2021 before launch and
+ * correct this entry if needed.
+ */
+export const MP2_HISTORICAL_DIVIDEND_RATES: Mp2HistoricalDividendRate[] = [
+  { year: 2025, rate: 0.0712 },
+  { year: 2024, rate: 0.071 },
+  { year: 2023, rate: 0.0705 },
+  { year: 2022, rate: 0.0703 },
+  { year: 2021, rate: 0.0579 }, // unverified — see disclaimer above (some sources report 6.00%)
+  { year: 2020, rate: 0.0612 },
+  { year: 2019, rate: 0.0723 },
+  { year: 2018, rate: 0.0741 },
+  { year: 2017, rate: 0.0811 },
+  { year: 2016, rate: 0.0743 },
+  { year: 2015, rate: 0.0534 },
+  { year: 2014, rate: 0.0469 },
+  { year: 2013, rate: 0.0458 },
+  { year: 2012, rate: 0.0467 },
+  { year: 2011, rate: 0.0463 },
+  { year: 2010, rate: 0.055 }
+]
+
 /* ------------------------------------------------------------------ */
 /* 13th Month Pay                                                       */
 /* ------------------------------------------------------------------ */
